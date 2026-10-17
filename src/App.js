@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 
 function Square({ value, onSquareClick }) {
@@ -96,22 +98,17 @@ export default function Game() {
   );
 }
 
+// regex calculatewinner
 function calculateWinner(squares) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
-    }
+  const boardStr = squares.map((sq) => sq || '-').join('');
+
+  const re = /^(?:(?:...){0,2}([OX])\1\1|.{0,2}([OX])..\2..\2|([OX])...\3...\3|..([OX]).\4.\4)/;
+
+  const match = boardStr.match(re);
+
+  if (!match) {
+    return null;
   }
-  return null;
+
+  return match[1] || match[2] || match[3] || match[4] || null;
 }
